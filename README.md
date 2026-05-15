@@ -21,7 +21,7 @@ A native macOS menu bar app for streaming BBC Radio 6 Music, with Last.fm scrobb
 
 ```bash
 xcode-select --install   # skip if already installed
-git clone https://github.com/tallowandsons/bbc-radio-6
+git clone https://github.com/tallowandsons/bbc-radio-6-music
 cd bbc-radio-6
 bash build.sh
 open 'BBC Radio 6.app'
