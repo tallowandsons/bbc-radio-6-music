@@ -24,10 +24,11 @@ rm -rf "${APP_BUNDLE}"
 mkdir -p "${APP_BUNDLE}/Contents/MacOS"
 mkdir -p "${APP_BUNDLE}/Contents/Resources"
 
-echo "Compiling Swift..."
+ARCH=$(uname -m)
+echo "Compiling Swift (${ARCH})..."
 swiftc "${SOURCES[@]}" \
     -sdk "$SDK" \
-    -target arm64-apple-macosx13.0 \
+    -target "${ARCH}-apple-macosx13.0" \
     -swift-version 5 \
     -framework AVFoundation \
     -framework MediaPlayer \
@@ -47,6 +48,9 @@ sed \
 echo "Copying resources..."
 cp "BBC Radio 6/radio6.svg" "${APP_BUNDLE}/Contents/Resources/radio6.svg"
 cp "BBC Radio 6/AppIcon.icns" "${APP_BUNDLE}/Contents/Resources/AppIcon.icns"
+
+echo "Signing..."
+codesign --force --deep --sign - "${APP_BUNDLE}"
 
 echo ""
 echo "Built: ${APP_BUNDLE}"
