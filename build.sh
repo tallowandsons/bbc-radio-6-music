@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-APP_NAME="BBC Radio 6"
-BUNDLE_ID="mijewe.bbc-radio-6"
+APP_NAME="BBC Radio 6 Music"
+BUNDLE_ID="mijewe.bbc-radio-6-music"
 SDK=$(xcrun --show-sdk-path)
 APP_BUNDLE="${APP_NAME}.app"
 EXECUTABLE="${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
