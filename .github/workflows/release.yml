@@ -16,8 +16,11 @@ jobs:
         with:
           fetch-depth: 0  # needed so git describe can find tags
 
+      - name: Disable Liquid Glass
+        run: defaults write NSGlobalDomain UIEnableArbitraryLiquidGlassViews -bool NO
+
       - name: Build
-        run: bash build.sh
+        run: UNIVERSAL=1 bash build.sh
 
       - name: Zip app bundle
         run: |
@@ -36,7 +39,8 @@ jobs:
 
             1. Download `BBC.Radio.6.Music-${{ env.VERSION }}.zip` and unzip it
             2. Move `BBC Radio 6 Music.app` to your Applications folder
-            3. **First launch only** — macOS will block an unsigned app. Right-click the app → **Open** → **Open** to allow it, or run:
+            3. **First launch only** — macOS will block an unsigned app. Run this in Terminal:
                ```
                xattr -dr com.apple.quarantine "/Applications/BBC Radio 6 Music.app"
                ```
+               Or: open the app, then go to **System Settings → Privacy & Security → Open Anyway**.

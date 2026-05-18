@@ -27,15 +27,38 @@ mkdir -p "${APP_BUNDLE}/Contents/MacOS"
 mkdir -p "${APP_BUNDLE}/Contents/Resources"
 
 ARCH=$(uname -m)
-echo "Compiling Swift (${ARCH})..."
-swiftc "${SOURCES[@]}" \
-    -sdk "$SDK" \
-    -target "${ARCH}-apple-macosx13.0" \
-    -swift-version 5 \
-    -framework AVFoundation \
-    -framework MediaPlayer \
-    -framework Security \
-    -o "$EXECUTABLE"
+
+if [ "${UNIVERSAL:-0}" = "1" ]; then
+    echo "Compiling Swift (universal)..."
+    swiftc "${SOURCES[@]}" \
+        -sdk "$SDK" \
+        -target "arm64-apple-macosx13.0" \
+        -swift-version 5 \
+        -framework AVFoundation \
+        -framework MediaPlayer \
+        -framework Security \
+        -o "${EXECUTABLE}-arm64"
+    swiftc "${SOURCES[@]}" \
+        -sdk "$SDK" \
+        -target "x86_64-apple-macosx13.0" \
+        -swift-version 5 \
+        -framework AVFoundation \
+        -framework MediaPlayer \
+        -framework Security \
+        -o "${EXECUTABLE}-x86_64"
+    lipo -create "${EXECUTABLE}-arm64" "${EXECUTABLE}-x86_64" -output "$EXECUTABLE"
+    rm "${EXECUTABLE}-arm64" "${EXECUTABLE}-x86_64"
+else
+    echo "Compiling Swift (${ARCH})..."
+    swiftc "${SOURCES[@]}" \
+        -sdk "$SDK" \
+        -target "${ARCH}-apple-macosx13.0" \
+        -swift-version 5 \
+        -framework AVFoundation \
+        -framework MediaPlayer \
+        -framework Security \
+        -o "$EXECUTABLE"
+fi
 
 echo "Processing Info.plist..."
 sed \

@@ -24,11 +24,13 @@ You have two options when installing this app
 
 Download the latest zip from the [Releases](https://github.com/tallowandsons/bbc-radio-6-music/releases) page, unzip, and move `BBC Radio 6 Music.app` to your Applications folder.
 
-**First launch only:** macOS will block the app because it isn't signed by an identified developer. Right-click the app → **Open** → **Open** to allow it. Alternatively, in Terminal:
+**First launch only:** macOS will block the app because it isn't signed by an identified developer. The easiest fix is to run this in Terminal:
 
 ```bash
 xattr -dr com.apple.quarantine "/Applications/BBC Radio 6 Music.app"
 ```
+
+Alternatively: attempt to open the app, then go to **System Settings → Privacy & Security** and click **Open Anyway**.
 
 ### Build from source
 
