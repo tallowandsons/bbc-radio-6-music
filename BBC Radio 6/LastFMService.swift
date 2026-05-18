@@ -27,6 +27,11 @@ class LastFMService: ObservableObject {
 
     var isConnected: Bool { sessionKey != nil }
 
+    var scrobblingEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: "lastfm_scrobbling_enabled") }
+        set { UserDefaults.standard.set(newValue, forKey: "lastfm_scrobbling_enabled") }
+    }
+
     private var playerController: PlayerController
 
     init(playerController: PlayerController, nowPlayingService: NowPlayingService) {
@@ -151,6 +156,7 @@ class LastFMService: ObservableObject {
     }
 
     private func maybeScrobble(track: NowPlayingTrack, startedAt: Date) {
+        guard scrobblingEnabled else { return }
         guard track.id != lastScrobbledId else { return }
         let elapsed = Date().timeIntervalSince(startedAt)
         guard elapsed >= 30 else { return }
@@ -159,6 +165,7 @@ class LastFMService: ObservableObject {
     }
 
     private func updateNowPlaying(artist: String, track: String) {
+        guard scrobblingEnabled else { return }
         guard let sessionKey else { return }
         post(params: [
             "method": "track.updateNowPlaying",

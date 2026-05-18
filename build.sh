@@ -47,6 +47,7 @@ sed \
 
 echo "Copying resources..."
 cp "BBC Radio 6/radio6.svg" "${APP_BUNDLE}/Contents/Resources/radio6.svg"
+cp "BBC Radio 6/lastfm.svg" "${APP_BUNDLE}/Contents/Resources/lastfm.svg"
 cp "BBC Radio 6/AppIcon.icns" "${APP_BUNDLE}/Contents/Resources/AppIcon.icns"
 
 echo "Signing..."

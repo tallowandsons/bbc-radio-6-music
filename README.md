@@ -24,7 +24,7 @@ xcode-select --install   # skip if already installed
 git clone https://github.com/tallowandsons/bbc-radio-6-music
 cd bbc-radio-6-music
 bash build.sh
-open 'BBC Radio 6.app'
+open 'BBC Radio 6 Music.app'
 ```
 
 ## Last.fm scrobbling
