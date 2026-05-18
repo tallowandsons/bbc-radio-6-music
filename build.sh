@@ -3,6 +3,8 @@ set -euo pipefail
 
 APP_NAME="BBC Radio 6 Music"
 BUNDLE_ID="tallowandsons.bbc-radio-6-music"
+VERSION=$(git describe --tags --abbrev=0 2>/dev/null)
+VERSION=${VERSION:-1.0}
 SDK=$(xcrun --show-sdk-path)
 APP_BUNDLE="${APP_NAME}.app"
 EXECUTABLE="${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
@@ -43,6 +45,7 @@ sed \
     -e 's/$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/g' \
     -e 's/$(MACOSX_DEPLOYMENT_TARGET)/13.0/g' \
     -e 's/$(DEVELOPMENT_LANGUAGE)/en/g' \
+    -e 's/$(MARKETING_VERSION)/'"${VERSION}"'/g' \
     "BBC Radio 6/Info.plist" > "${APP_BUNDLE}/Contents/Info.plist"
 
 echo "Copying resources..."
