@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0
+
+### Added
+- Check for updates — notified via context menu when a new version is available; can be disabled in Preferences
+- Preferences reorganised into Playback, General, and Last.fm sections
+- Last.fm connection status now shown inline with API credentials
+
 ## 0.0.5
 
 ### Added

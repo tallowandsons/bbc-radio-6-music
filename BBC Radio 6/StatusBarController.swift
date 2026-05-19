@@ -6,6 +6,7 @@ class StatusBarController: NSObject {
     private let playerController: PlayerController
     private let nowPlayingService: NowPlayingService
     private let scheduleService: ScheduleService
+    private let updateChecker: UpdateChecker
     private let lastFMService: LastFMService
     private var cancellables = Set<AnyCancellable>()
     private var preferencesWindowController: PreferencesWindowController?
@@ -22,11 +23,13 @@ class StatusBarController: NSObject {
         playerController: PlayerController,
         nowPlayingService: NowPlayingService,
         scheduleService: ScheduleService,
+        updateChecker: UpdateChecker,
         lastFMService: LastFMService
     ) {
         self.playerController = playerController
         self.nowPlayingService = nowPlayingService
         self.scheduleService = scheduleService
+        self.updateChecker = updateChecker
         self.lastFMService = lastFMService
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         super.init()
@@ -162,6 +165,14 @@ class StatusBarController: NSObject {
     private func showContextMenu(for button: NSStatusBarButton) {
         let menu = NSMenu()
 
+        if let version = updateChecker.availableVersion {
+            let updateItem = NSMenuItem(title: "Update available: \(version)", action: #selector(openReleasesPage), keyEquivalent: "")
+            updateItem.image = NSImage(systemSymbolName: "arrow.down.circle.fill", accessibilityDescription: nil)
+            updateItem.target = self
+            menu.addItem(updateItem)
+            menu.addItem(.separator())
+        }
+
         if let track = nowPlayingService.currentTrack {
             let item = NSMenuItem(title: "\(track.artist) — \(track.track)", action: nil, keyEquivalent: "")
             item.isEnabled = false
@@ -191,7 +202,7 @@ class StatusBarController: NSObject {
         prefsItem.target = self
         menu.addItem(prefsItem)
 
-        let quitItem = NSMenuItem(title: "Quit BBC Radio 6", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit BBC Radio 6 Music", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         quitItem.keyEquivalentModifierMask = .command
         menu.addItem(quitItem)
 
@@ -200,6 +211,10 @@ class StatusBarController: NSObject {
 
     @objc private func togglePlayPause() {
         playerController.toggle()
+    }
+
+    @objc private func openReleasesPage() {
+        NSWorkspace.shared.open(URL(string: "https://github.com/tallowandsons/bbc-radio-6-music/releases/latest")!)
     }
 
     @objc private func openPreferences() {

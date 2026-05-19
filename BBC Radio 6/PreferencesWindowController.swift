@@ -8,8 +8,8 @@ class PreferencesWindowController: NSWindowController {
         let window = NSWindow(contentViewController: hostingController)
         window.title = "Preferences"
         window.styleMask = [.titled, .closable, .resizable]
-        window.setContentSize(NSSize(width: 560, height: 540))
-        window.minSize = NSSize(width: 480, height: 480)
+        window.setContentSize(NSSize(width: 560, height: 600))
+        window.minSize = NSSize(width: 480, height: 560)
         window.level = .floating
         window.center()
         self.init(window: window)

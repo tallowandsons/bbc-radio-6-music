@@ -66,6 +66,7 @@ struct PreferencesView: View {
     @ObservedObject var lastFMService: LastFMService
     @AppStorage("menuBarDisplay") private var menuBarDisplay = "track"
     @AppStorage("leftClickToPause") private var leftClickToPause = true
+    @AppStorage("checkForUpdates") private var checkForUpdates = true
     @AppStorage("lastfm_scrobbling_enabled") private var scrobblingEnabled = false
     @State private var apiKey: String
     @State private var apiSecret: String
@@ -104,14 +105,20 @@ struct PreferencesView: View {
                         Image(systemName: "speaker.wave.3.fill").foregroundStyle(.secondary)
                     }
                 }
+            } header: {
+                Label("Playback", systemImage: "headphones")
+            }
+
+            Section {
                 Picker("Show in menu bar", selection: $menuBarDisplay) {
                     Text("Now playing").tag("track")
                     Text("Current show").tag("show")
                     Text("Nothing").tag("nothing")
                 }
                 Toggle("Left click to pause / play", isOn: $leftClickToPause)
+                Toggle("Check for updates", isOn: $checkForUpdates)
             } header: {
-                Label("Playback", systemImage: "headphones")
+                Label("General", systemImage: "switch.2")
             }
 
             Section {
@@ -138,32 +145,6 @@ struct PreferencesView: View {
                         .buttonStyle(.borderless)
                     }
                 }
-            } header: {
-                Label {
-                    Text("Last.fm")
-                } icon: {
-                    Image(nsImage: lastFMLogo)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 14, height: 14)
-                        .offset(y: 1)
-                }
-            } footer: {
-                HStack(spacing: 0) {
-                    Text("Get an API key at ")
-                        .foregroundColor(.secondary)
-                    Link("last.fm/api/account/create",
-                         destination: URL(string: "https://www.last.fm/api/account/create")!)
-                        .foregroundColor(.secondary)
-                        .underline()
-                        .onHover { hovering in
-                            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
-                        }
-                }
-                .font(.footnote)
-            }
-
-            Section {
                 if lastFMService.isConnected {
                     HStack {
                         Label("Connected as \(lastFMService.connectedUsername ?? "unknown")", systemImage: "checkmark.circle.fill")
@@ -197,6 +178,29 @@ struct PreferencesView: View {
                         .foregroundStyle(.red)
                         .font(.caption)
                 }
+            } header: {
+                Label {
+                    Text("Last.fm")
+                } icon: {
+                    Image(nsImage: lastFMLogo)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 14, height: 14)
+                        .offset(y: 1)
+                }
+            } footer: {
+                HStack(spacing: 0) {
+                    Text("Get an API key at ")
+                        .foregroundColor(.secondary)
+                    Link("last.fm/api/account/create",
+                         destination: URL(string: "https://www.last.fm/api/account/create")!)
+                        .foregroundColor(.secondary)
+                        .underline()
+                        .onHover { hovering in
+                            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                        }
+                }
+                .font(.footnote)
             }
         }
         .formStyle(.grouped)
@@ -220,7 +224,7 @@ struct PreferencesView: View {
         .padding(.vertical, 10)
 
         } // VStack
-        .frame(minWidth: 480, minHeight: 480)
+        .frame(minWidth: 480, minHeight: 560)
     }
 
     private func startConnect() {
