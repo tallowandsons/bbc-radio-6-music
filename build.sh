@@ -15,6 +15,7 @@ SOURCES=(
     "BBC Radio 6/StatusBarController.swift"
     "BBC Radio 6/PlayerController.swift"
     "BBC Radio 6/NowPlayingService.swift"
+    "BBC Radio 6/ScheduleService.swift"
     "BBC Radio 6/LastFMService.swift"
     "BBC Radio 6/PreferencesWindowController.swift"
     "BBC Radio 6/PreferencesView.swift"

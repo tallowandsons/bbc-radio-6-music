@@ -64,7 +64,7 @@ private struct PastableSecureField: NSViewRepresentable {
 struct PreferencesView: View {
     @ObservedObject var playerController: PlayerController
     @ObservedObject var lastFMService: LastFMService
-    @AppStorage("showNowPlayingInMenuBar") private var showNowPlayingInMenuBar = true
+    @AppStorage("menuBarDisplay") private var menuBarDisplay = "track"
     @AppStorage("leftClickToPause") private var leftClickToPause = true
     @AppStorage("lastfm_scrobbling_enabled") private var scrobblingEnabled = false
     @State private var apiKey: String
@@ -104,7 +104,11 @@ struct PreferencesView: View {
                         Image(systemName: "speaker.wave.3.fill").foregroundStyle(.secondary)
                     }
                 }
-                Toggle("Show now playing in menu bar", isOn: $showNowPlayingInMenuBar)
+                Picker("Show in menu bar", selection: $menuBarDisplay) {
+                    Text("Now playing").tag("track")
+                    Text("Current show").tag("show")
+                    Text("Nothing").tag("nothing")
+                }
                 Toggle("Left click to pause / play", isOn: $leftClickToPause)
             } header: {
                 Label("Playback", systemImage: "headphones")

@@ -5,12 +5,13 @@ class StatusBarController: NSObject {
     private let statusItem: NSStatusItem
     private let playerController: PlayerController
     private let nowPlayingService: NowPlayingService
+    private let scheduleService: ScheduleService
     private let lastFMService: LastFMService
     private var cancellables = Set<AnyCancellable>()
     private var preferencesWindowController: PreferencesWindowController?
 
-    private var showNowPlaying: Bool {
-        UserDefaults.standard.object(forKey: "showNowPlayingInMenuBar") as? Bool ?? true
+    private var menuBarDisplay: String {
+        UserDefaults.standard.string(forKey: "menuBarDisplay") ?? "track"
     }
 
     private var leftClickToPause: Bool {
@@ -20,10 +21,12 @@ class StatusBarController: NSObject {
     init(
         playerController: PlayerController,
         nowPlayingService: NowPlayingService,
+        scheduleService: ScheduleService,
         lastFMService: LastFMService
     ) {
         self.playerController = playerController
         self.nowPlayingService = nowPlayingService
+        self.scheduleService = scheduleService
         self.lastFMService = lastFMService
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         super.init()
@@ -47,6 +50,14 @@ class StatusBarController: NSObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isPlaying, track in
                 self?.updateButton(isPlaying: isPlaying, track: track)
+            }
+            .store(in: &cancellables)
+
+        scheduleService.$currentShow
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.updateTitle(isPlaying: self.playerController.isPlaying, track: self.nowPlayingService.currentTrack)
             }
             .store(in: &cancellables)
 
@@ -117,11 +128,22 @@ class StatusBarController: NSObject {
 
     private func updateTitle(isPlaying: Bool, track: NowPlayingTrack?) {
         guard let button = statusItem.button else { return }
-        if showNowPlaying, let track {
-            let label = "\(track.artist) — \(track.track)"
-            let truncated = label.count > 45 ? String(label.prefix(42)) + "…" : label
-            button.title = " \(truncated)"
-        } else {
+        switch menuBarDisplay {
+        case "track":
+            if let track {
+                let label = "\(track.artist) — \(track.track)"
+                button.title = " \(label.count > 45 ? String(label.prefix(42)) + "…" : label)"
+            } else {
+                button.title = ""
+            }
+        case "show":
+            if let show = scheduleService.currentShow {
+                let label = "\(show.name) \(show.formattedTimeRange)"
+                button.title = " \(label.count > 45 ? String(label.prefix(42)) + "…" : label)"
+            } else {
+                button.title = ""
+            }
+        default:
             button.title = ""
         }
     }
